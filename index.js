@@ -15,21 +15,21 @@ var mixins = {
 		appMeta: 'apple-itunes-app',
 		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
+			return this.options.customStoreLink || 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
 		}
 	},
 	android: {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'http://play.google.com/store/apps/details?id=' + this.appId;
+			return this.options.customStoreLink || "http://play.google.com/store/apps/details?id=' + this.appId";
 		}
 	},
 	windows: {
 		appMeta: 'msApplication-ID',
 		iconRels: ['windows-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'http://www.windowsphone.com/s?appid=' + this.appId;
+			return this.options.customStoreLink || 'http://www.windowsphone.com/s?appid=' + this.appId;
 		}
 	}
 };
@@ -74,8 +74,8 @@ var SmartBanner = function(options) {
 	if (!this.type
 		|| ( this.type === 'ios' && agent.browser.name === 'Mobile Safari' && parseInt(agent.os.version) >= 6 )
 		|| navigator.standalone
-		|| cookie.get('smartbanner-closed')
-		|| cookie.get('smartbanner-installed')) {
+		|| (cookie.get('smartbanner-closed') && !this.options.alwaysShow)
+		|| (cookie.get('smartbanner-installed' && !this.options.alwaysShow))) {
 		return;
 	}
 
